@@ -5,6 +5,7 @@ const Recipe = require('./models/Recipe');
 const User = require('./models/User');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 
 
 
@@ -32,17 +33,34 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 
+// setup JWT authentication middleware
+app.use(async (req, res, next) => {
+  const token = req.headers['authorization'];
+  if (token !== "null"){
+    try {
+      const currentUser = await jwt.verify(token, process.env.SECRET);
+      req.currentUser = currentUser;
+    } catch(err) {
+      console.error(err);
+    }
+  }
+  console.log(token);
+  next();
+})
+
 //  Create GraphiQL application
 app.use('/graphiql', graphiqlExpress({ endpointURL: '/graphql'}))
 
 // Connect Schemas with GraphQL
-app.use('/graphql', bodyParser.json(), graphqlExpress({
-  schema,
-  context: {
-    Recipe,
-    User
-  } 
-}))
+app.use('/graphql', bodyParser.json(), graphqlExpress(({ currentUser }) => ({
+    schema,
+    context: {
+      Recipe,
+      User,
+      currentUser
+    } 
+  }))
+);
 
 const PORT = process.env.PORT || 4444;
 
