@@ -11,10 +11,12 @@ import Navbar from './components/navbar';
 import Search from './components/Recipe/Search';
 import AddRecipe from './components/Recipe/AddRecipe';
 import Profile from './components/Profile/Profile';
+import RecipePage from './components/Recipe/RecipePage';
 
 
 import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+
 // import { request } from 'http';
 
 const client = new ApolloClient({
@@ -47,6 +49,7 @@ const Root = ({ refetch, session }) => (
         <Route path="/signin" render={() => <Signin refetch={refetch}/>} />
         <Route path="/signup" render={() => <Signup refetch={refetch}/>} />
         <Route path="/recipe/add/" component={AddRecipe} />
+        <Route path="/recipes/:_id" component={RecipePage} />
         <Route path="/profile" component={Profile} />
         <Redirect to="/" />
       </Switch>
