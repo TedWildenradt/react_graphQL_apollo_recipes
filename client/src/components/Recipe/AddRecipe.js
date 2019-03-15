@@ -28,7 +28,7 @@ class AddRecipe extends React.Component {
   }
 
   validateForm = () => {
-    const {name,category,description,instructions, username} = this.state
+    const {name,category,description,instructions} = this.state
     const isInvalid = !name || !category || !description || !instructions;
     return isInvalid;
   }
@@ -41,9 +41,9 @@ class AddRecipe extends React.Component {
   }
 
   render(){
-    const {name,category,description,instructions, username} = this.state
+    const {name,category,description,instructions} = this.state
     return(
-    <Mutation mutation={ADD_RECIPE} variables={{name,category,description,instructions, username}}>
+    <Mutation mutation={ADD_RECIPE} variables={{name,category,description,instructions}}>
     {(addRecipe, {data, loading, error}) => {
 
       return(
