@@ -19,4 +19,4 @@ const Search = () => (
   </Query>
 )
 
-export default Search;
+export default Search; 
