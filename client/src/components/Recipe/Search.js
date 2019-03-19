@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link} from 'react-router-dom';
+import SearchItem from './searchItem';
 
 import {ApolloConsumer } from 'react-apollo';
 import {SEARCH_RECIPES} from '../../queries';
@@ -32,10 +32,7 @@ class Search extends React.Component{
           <ul>
             {searchResults.map(recipe => {
               return(
-                <li key={recipe._id}>
-                  <Link to={`/recipes/${recipe._id}`}><h4>{recipe.name}</h4></Link>
-                  <p>Likes: {recipe.likes}</p>
-                </li>
+                <SearchItem recipe={recipe} key={recipe._id}/>
               )
             })}
           </ul>
