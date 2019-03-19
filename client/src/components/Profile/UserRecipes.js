@@ -1,6 +1,6 @@
 import React from 'react'
 import {Query, Mutation} from 'react-apollo';
-import { GET_USER_RECIPES, DELETE_USER_RECIPE } from '../../queries';
+import { GET_USER_RECIPES, DELETE_USER_RECIPE, GET_ALL_RECIPES, GET_CURRENT_USER } from '../../queries';
 import {Link} from 'react-router-dom';
 
 
@@ -26,7 +26,10 @@ const UserRecipes = ({username}) => (
             <li key={recipe._id}>
               <Link to ={`/recipes/${recipe._id}`}><p>{recipe.name}</p></Link>
               <p style={{ marginBottom: '0' }}>{recipe.likes}</p>
-              <Mutation mutation={DELETE_USER_RECIPE} variables={{_id: recipe._id}} update={(cache, { data: { deleteUserRecipe } }) => {
+              <Mutation mutation={DELETE_USER_RECIPE} variables={{_id: recipe._id}} refetchQueries={() => [
+                {query: GET_ALL_RECIPES},
+                {query: GET_CURRENT_USER}
+              ]} update={(cache, { data: { deleteUserRecipe } }) => {
                 const { getUserRecipes} = cache.readQuery({
                   query: GET_USER_RECIPES,
                   variables: { username }
