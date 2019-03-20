@@ -22,14 +22,19 @@ const UserRecipes = ({username}) => (
       return(
         <ul>
           <h3>Your recipes</h3>
+          {!data.getUserRecipes.length && <p>You have not added any recipes yet</p>}
           {data.getUserRecipes.map(recipe => (
             <li key={recipe._id}>
               <Link to ={`/recipes/${recipe._id}`}><p>{recipe.name}</p></Link>
               <p style={{ marginBottom: '0' }}>{recipe.likes}</p>
-              <Mutation mutation={DELETE_USER_RECIPE} variables={{_id: recipe._id}} refetchQueries={() => [
+              <Mutation 
+              mutation={DELETE_USER_RECIPE} 
+              variables={{_id: recipe._id}} 
+              refetchQueries={() => [
                 {query: GET_ALL_RECIPES},
                 {query: GET_CURRENT_USER}
-              ]} update={(cache, { data: { deleteUserRecipe } }) => {
+              ]} 
+              update={(cache, { data: { deleteUserRecipe } }) => {
                 const { getUserRecipes} = cache.readQuery({
                   query: GET_USER_RECIPES,
                   variables: { username }
