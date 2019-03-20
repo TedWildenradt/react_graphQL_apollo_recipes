@@ -35,7 +35,6 @@ class LikeRecipe extends React.Component {
   handleLike = (likeRecipe, unlikeRecipe) => {
     if (this.state.liked){
       likeRecipe().then( async ({ data }) => {
-        console.log(data);
         await this.props.refetch();
       })
     } else {
@@ -62,7 +61,6 @@ class LikeRecipe extends React.Component {
   updateUnlike = (cache, {data: {unlikeRecipe}}) => {
     const { _id } = this.props;
     const { getRecipe } = cache.readQuery({ query: GET_RECIPE, variables: { _id } })
-    console.log(cache);
     cache.writeQuery({
       query: GET_RECIPE,
       variables: { _id },
