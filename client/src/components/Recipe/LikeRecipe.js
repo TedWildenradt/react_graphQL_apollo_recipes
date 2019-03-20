@@ -24,22 +24,25 @@ class LikeRecipe extends React.Component {
     }
   }
 
-  handleClick = likeRecipe => {
+  handleClick = (likeRecipe, unlikeRecipe) => {
     this.setState(prevState => ({
       liked: !prevState.liked
     }),
-    () => this.handleLike(likeRecipe)
+    () => this.handleLike(likeRecipe, unlikeRecipe)
     )
   }
 
-  handleLike = (likeRecipe) => {
+  handleLike = (likeRecipe, unlikeRecipe) => {
     if (this.state.liked){
       likeRecipe().then( async ({ data }) => {
         console.log(data);
         await this.props.refetch();
       })
     } else {
-      console.log('unliked');
+      unlikeRecipe().then( async ({ data }) => {
+
+      await this.props.refetch();
+      })
     }
   }
 
@@ -56,6 +59,19 @@ class LikeRecipe extends React.Component {
     })
   }
 
+  updateUnlike = (cache, {data: {unlikeRecipe}}) => {
+    const { _id } = this.props;
+    const { getRecipe } = cache.readQuery({ query: GET_RECIPE, variables: { _id } })
+    console.log(cache);
+    cache.writeQuery({
+      query: GET_RECIPE,
+      variables: { _id },
+      data: {
+        getRecipe: {...getRecipe, likes: unlikeRecipe.likes - 1}
+      }
+    })
+  }
+
   render() {
     const { username, liked } = this.state;
     const { _id } = this.props;
@@ -63,18 +79,21 @@ class LikeRecipe extends React.Component {
       <Mutation 
       mutation={UNLIKE_RECIPE}
       variables={{ _id, username}}
+      update={this.updateUnlike}
       >
+      {unlikeRecipe => (
         <Mutation 
         mutation={LIKE_RECIPE} 
         variables={{ _id, username }}
         update={this.updateLike}
         >
           {(likeRecipe) => (
-            username && <button onClick={() => this.handleClick(likeRecipe)}>
-            {liked ? 'liked' : 'like'}
+            username && <button onClick={() => this.handleClick(likeRecipe, unlikeRecipe)}>
+            {liked ? 'Unlike' : 'like'}
             </button>
           )}
         </Mutation>
+      )}
       </Mutation>
     )
   }
